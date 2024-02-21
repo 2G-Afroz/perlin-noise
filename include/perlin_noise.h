@@ -1,5 +1,6 @@
 #ifndef PERLIN_NOISE_H
 #define PERLIN_NOISE_H
+#include <cmath>
 
 /**
  * @brief Performs interpolation between two values.
