@@ -18,7 +18,7 @@
  */
 float interpolate(float a, float b, float t);
 
-float getRandom(float x)
+float getRandom(float x);
 
 float perlinNoise(float x, int octaves = 2);
 
