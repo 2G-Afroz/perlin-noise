@@ -1,6 +1,7 @@
 #ifndef PERLIN_NOISE_H
 #define PERLIN_NOISE_H
 #include <cmath>
+#include <algorithm>
 
 /**
  * @brief Performs interpolation between two values.
@@ -20,6 +21,20 @@
 float interpolate(float a, float b, float t);
 
 float getRandom(float x);
+
+/**
+ * @brief Maps a value from one range to another.
+ *
+ * This function takes a value and maps it from a source range to a target range.
+ *
+ * @param value The input value to be mapped.
+ * @param fromLow The lower bound of the source range.
+ * @param fromHigh The upper bound of the source range.
+ * @param toLow The lower bound of the target range.
+ * @param toHigh The upper bound of the target range.
+ * @return The mapped value in the target range.
+ */
+float map(float value, float fromLow, float fromHigh, float toLow, float toHigh);
 
 float perlinNoise(float x, int octaves = 2);
 

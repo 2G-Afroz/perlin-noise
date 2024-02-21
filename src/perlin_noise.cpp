@@ -30,10 +30,18 @@ float getRandom(float x)
 	a ^= a << s | a >> (w - s);
 	a *= 2048419325u;
 
-	// Scale the random value to [0, 1]
-	float random = static_cast<float>(a) / static_cast<float>(~(0u));
+	// Scale the random value to [-0.5, 0.5]
+	float random = static_cast<float>(a) / static_cast<float>(~(0u)) -0.5f;
 
 	return random;
+}
+
+float map(float value, float fromLow, float fromHigh, float toLow, float toHigh){
+ 	// Ensure the input value is within the current range
+    value = std::min(std::max(value, fromLow), fromHigh);
+
+    // Map the value to the target range
+    return toLow + (toHigh - toLow) * ((value - fromLow) / (fromHigh - fromLow));
 }
 
 float perlinNoise(float x, int octaves) {
@@ -46,12 +54,15 @@ float perlinNoise(float x, int octaves) {
 		float x0 = (float)floor(x);
 		float x1 = x0 + 1;
 
-		float gX0 = getRandom(x0);
-		float gX1 = getRandom(x1);
+		float gX0 = map(getRandom(x0), -0.5f, 0.5f, -amplitude/2, amplitude/2);
+		float gX1 = map(getRandom(x1), -0.5f, 0.5f, -amplitude/2, amplitude/2);
 
 		float t = x - x0;
 
 		total += interpolate(gX0, gX1, t);
+
+		frequency *= 2.0f;
+		amplitude *= 0.5f;
 	}
 
 	return total;

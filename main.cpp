@@ -19,11 +19,11 @@ int main() {
 		DrawText("Hello, 2G-Afroz!", 10, 10, 20, WHITE);
 		float a = l;
 		for(int i = 0; i < WINDOW_WIDTH; i++) {
-			float noise = perlinNoise(a, 1) * 100 + 400;
+			float noise = perlinNoise(a, 3) * 100 + 400;
 			DrawCircle(i, noise, 1, WHITE);
-			a += 0.01;
+			a += 0.003;
 		}
-		l += 0.005;
+		l += 0.001;
 		EndDrawing();
 	}
 				
