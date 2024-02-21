@@ -20,6 +20,15 @@
  */
 float interpolate(float a, float b, float t);
 
+/**
+ * @brief Generates a pseudo-random float value based on the input.
+ *
+ * This function generates pseudo-random float values between -0.5 and 0.5
+ * using bitwise operations on the input value.
+ *
+ * @param x The input value used to generate the random number.
+ * @return A pseudo-random float value between -0.5 and 0.5.
+ */
 float getRandom(float x);
 
 /**
@@ -36,6 +45,16 @@ float getRandom(float x);
  */
 float map(float value, float fromLow, float fromHigh, float toLow, float toHigh);
 
+/**
+ * @brief Generates Perlin noise based on the input value.
+ *
+ * This function generates Perlin noise by combining multiple octaves of
+ * random noise using a series of interpolations.
+ *
+ * @param x The input value used to generate Perlin noise.
+ * @param octaves The number of octaves used to generate the noise. Defaults to 2 if not specified.
+ * @return The Perlin noise value at the given input position.
+ */
 float perlinNoise(float x, int octaves = 2);
 
 
