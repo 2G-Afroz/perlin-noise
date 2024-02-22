@@ -58,4 +58,13 @@ float map(float value, float fromLow, float fromHigh, float toLow, float toHigh)
 float perlinNoise(float x, int octaves = 2);
 
 
+//###### FOR 2D PERLIN NOISE #######//
+struct vector2;
+
+vector2 getRandom(float x, float y);
+
+float dotGridPoint(float ix, float iy, float x, float y);
+
+float perlinNoise(float x, float y, float octaves = 2);
+
 #endif

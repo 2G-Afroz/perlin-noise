@@ -67,3 +67,32 @@ float perlinNoise(float x, int octaves) {
 
 	return total;
 }
+
+//### FOR 2D PERLIN NOISE ###//
+struct vector2 {
+	float x, y;
+};
+
+vector2 getRandom(float x, float y) {
+	// No precomputed gradients mean this works for any number of grid coordinates
+    const unsigned w = 8 * sizeof(unsigned);
+    const unsigned s = w / 2; // rotation width
+    unsigned a = x, b = y;
+    a *= 3284157443; b ^= a << s | a >> w-s;
+    b *= 1911520717; a ^= b << s | b >> w-s;
+    a *= 2048419325;
+    float random = a * (3.14159265 / ~(~0u >> 1)); // in [0, 2*Pi]
+    vector2 v;
+    v.x = cos(random)/2;	// Return value between -0.5 to 0.5.
+	v.y = sin(random)/2;	// Return value between -0.5 to o.5.
+    return v;
+}
+
+float dotGridPoint(float ix, float iy, float x, float y) {
+	vector2 rand = getRandom(ix, iy);
+
+	float dx = x - ix;
+	float dy = y - iy;
+
+	return (dx * rand.x + dy * rand.y);
+}
