@@ -65,6 +65,6 @@ vector2 getRandom(float x, float y);
 
 float dotGridPoint(float ix, float iy, float x, float y);
 
-float perlinNoise(float x, float y, float octaves = 2);
+float perlinNoise(float x, float y, int octaves = 2);
 
 #endif

@@ -78,21 +78,42 @@ vector2 getRandom(float x, float y) {
     const unsigned w = 8 * sizeof(unsigned);
     const unsigned s = w / 2; // rotation width
     unsigned a = x, b = y;
-    a *= 3284157443; b ^= a << s | a >> w-s;
-    b *= 1911520717; a ^= b << s | b >> w-s;
+    a *= 3284157443; b ^= a << s | a >> (w-s);
+    b *= 1911520717; a ^= b << s | b >> (w-s);
     a *= 2048419325;
     float random = a * (3.14159265 / ~(~0u >> 1)); // in [0, 2*Pi]
     vector2 v;
-    v.x = cos(random)/2;	// Return value between -0.5 to 0.5.
-	v.y = sin(random)/2;	// Return value between -0.5 to o.5.
+    v.x = cos(random);	// Return value between -1 to 1.
+	v.y = sin(random);	// Return value between -1 to 1.
     return v;
 }
 
-float dotGridPoint(float ix, float iy, float x, float y) {
+float dotGridPoint(int ix, int iy, float x, float y) {
 	vector2 rand = getRandom(ix, iy);
 
-	float dx = x - ix;
-	float dy = y - iy;
+	float dx = x - (float)ix;
+	float dy = y - (float)iy;
 
 	return (dx * rand.x + dy * rand.y);
+}
+
+float perlinNoise(float x, float y, int octaves) {
+
+	int x0 = (int)floor(x);
+	int x1 = x0 + 1;
+	int y0 = (int)floor(y);
+	int y1 = y0 + 1;
+
+	float xt = x - (float)x0;
+	float yt = y - (float)y0;
+
+	float n0 = dotGridPoint(x0, y0, x, y);
+	float n1 = dotGridPoint(x1, y0, x, y);
+	float xn = interpolate(n0, n1, xt);
+
+	n0 = dotGridPoint(x0, y1, x, y);
+	n1 = dotGridPoint(x1, y1, x, y);
+	float yn = interpolate(n0, n1, xt);
+
+	return map(interpolate(xn, yn, yt), -0.7f, 0.7f, -1.0f, 1.0f);	// Return value between -1 and 1
 }
