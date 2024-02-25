@@ -67,3 +67,69 @@ float perlinNoise(float x, int octaves) {
 
 	return total;
 }
+
+//### FOR 2D PERLIN NOISE ###//
+struct vector2 {
+	float x, y;
+};
+
+vector2 getRandom(float x, float y) {
+	// No precomputed gradients mean this works for any number of grid coordinates
+    const unsigned w = 8 * sizeof(unsigned);
+    const unsigned s = w / 2; // rotation width
+    unsigned a = x, b = y;
+    a *= 3284157443; b ^= a << s | a >> (w-s);
+    b *= 1911520717; a ^= b << s | b >> (w-s);
+    a *= 2048419325;
+    float random = a * (3.14159265 / ~(~0u >> 1)); // in [0, 2*Pi]
+    vector2 v;
+    v.x = cos(random);	// Return value between -1 to 1.
+	v.y = sin(random);	// Return value between -1 to 1.
+    return v;
+}
+
+float dotGridPoint(int ix, int iy, float x, float y) {
+	vector2 rand = getRandom(ix, iy);
+
+	float dx = x - (float)ix;
+	float dy = y - (float)iy;
+
+	return (dx * rand.x + dy * rand.y);
+}
+
+float perlinNoise(float x, float y, int octaves) {
+
+	float frequency = 1.0f;
+	float amplitude = 1.0f;
+	float total = 0;
+
+	for(int i = 0; i< octaves; i++) {
+
+		x *= frequency;
+		y *= frequency;
+
+		int x0 = (int)floor(x);
+		int x1 = x0 + 1;
+		int y0 = (int)floor(y);
+		int y1 = y0 + 1;
+
+		float xt = x - (float)x0;
+		float yt = y - (float)y0;
+
+		float n0 = dotGridPoint(x0, y0, x, y);
+		float n1 = dotGridPoint(x1, y0, x, y);
+		float xn = interpolate(n0, n1, xt);
+
+		n0 = dotGridPoint(x0, y1, x, y);
+		n1 = dotGridPoint(x1, y1, x, y);
+		float yn = interpolate(n0, n1, xt);
+
+		total += map(interpolate(xn, yn, yt), -0.7f, 0.7f, -amplitude, amplitude);	// Return value between [-amplitude and amplitude]
+
+		frequency *= 2.0f;
+		amplitude *= 0.5f;
+	}
+
+	return total;
+
+}
