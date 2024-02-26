@@ -18,6 +18,7 @@ float interpolate(float a, float b, float t)
 	//return a + t * t * t * (t * (6.0 * t - 15.0) + 10.0) * (b - a);
 }
 
+//### FOR 1D PERLIN NOISE ###//
 float getRandom(float x)
 {
 	// No precomputed gradients mean this works for any number of grid coordinates
@@ -89,47 +90,60 @@ vector2 getRandom(float x, float y) {
 }
 
 float dotGridPoint(int ix, int iy, float x, float y) {
-	vector2 rand = getRandom(ix, iy);
+    // Obtain random gradient vectors at the specified grid point (ix, iy)
+    vector2 rand = getRandom(ix, iy);
 
-	float dx = x - (float)ix;
-	float dy = y - (float)iy;
+    // Calculate the distance from the grid point to the given point (x, y)
+    float dx = x - static_cast<float>(ix);
+    float dy = y - static_cast<float>(iy);
 
-	return (dx * rand.x + dy * rand.y);
+    // Compute the dot product between the distance vectors and the gradient vectors
+    return (dx * rand.x + dy * rand.y);
 }
 
 float perlinNoise(float x, float y, int octaves) {
+    // Initialize frequency, amplitude, and total noise value
+    float frequency = 1.0f;
+    float amplitude = 1.0f;
+    float total = 0.0f;
 
-	float frequency = 1.0f;
-	float amplitude = 1.0f;
-	float total = 0;
+    // Loop through each octave to generate noise
+    for (int i = 0; i < octaves; i++) {
+        // Scale the coordinates based on the current frequency
+        x *= frequency;
+        y *= frequency;
 
-	for(int i = 0; i< octaves; i++) {
+        // Calculate the integer grid coordinates of the surrounding points
+        int x0 = static_cast<int>(floor(x));
+        int x1 = x0 + 1;
+        int y0 = static_cast<int>(floor(y));
+        int y1 = y0 + 1;
 
-		x *= frequency;
-		y *= frequency;
+        // Calculate the fractional parts of the coordinates
+        float xt = x - static_cast<float>(x0);
+        float yt = y - static_cast<float>(y0);
 
-		int x0 = (int)floor(x);
-		int x1 = x0 + 1;
-		int y0 = (int)floor(y);
-		int y1 = y0 + 1;
+        // Compute noise values at the grid points and interpolate between them
+        float n0 = dotGridPoint(x0, y0, x, y);
+        float n1 = dotGridPoint(x1, y0, x, y);
+        float xn = interpolate(n0, n1, xt);
 
-		float xt = x - (float)x0;
-		float yt = y - (float)y0;
+        n0 = dotGridPoint(x0, y1, x, y);
+        n1 = dotGridPoint(x1, y1, x, y);
+        float yn = interpolate(n0, n1, xt);
 
-		float n0 = dotGridPoint(x0, y0, x, y);
-		float n1 = dotGridPoint(x1, y0, x, y);
-		float xn = interpolate(n0, n1, xt);
+        // Interpolate along the y-axis and map the result to a specific range
+        float interpolatedNoise = interpolate(xn, yn, yt);
+        float mappedNoise = map(interpolatedNoise, -0.7f, 0.7f, -amplitude, amplitude);
 
-		n0 = dotGridPoint(x0, y1, x, y);
-		n1 = dotGridPoint(x1, y1, x, y);
-		float yn = interpolate(n0, n1, xt);
+        // Accumulate the noise value with proper scaling
+        total += mappedNoise;
 
-		total += map(interpolate(xn, yn, yt), -0.7f, 0.7f, -amplitude, amplitude);	// Return value between [-amplitude and amplitude]
+        // Update frequency and amplitude for the next octave
+        frequency *= 2.0f;
+        amplitude *= 0.5f;
+    }
 
-		frequency *= 2.0f;
-		amplitude *= 0.5f;
-	}
-
-	return total;
-
+    // Return the total accumulated noise value
+    return total;
 }

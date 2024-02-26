@@ -11,6 +11,8 @@ int main() {
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "perlin-noise");
 
 	float l = 0.00;
+	float freq = 0.01;
+	int octaves = 2;
 
 	// Main game loop
 	while (!WindowShouldClose()) {
@@ -22,11 +24,11 @@ int main() {
 		for(int i = 0; i < WINDOW_WIDTH; i++) {
 			float b = 0.0f;
 			for(int j = 0; j < WINDOW_HEIGHT; j++) {
-				float noise = map(perlinNoise(a, b, 2), -1.0f, 1.0f, 0.0f, 1.0f);
+				float noise = map(perlinNoise(a, b, octaves), -1.0f, 1.0f, 0.0f, 1.0f);
 				DrawPixel(i, j, ColorFromHSV(0,0,noise));
-				b += 0.01;
+				b += freq;
 			}
-			a += 0.01;
+			a += freq;
 		}
 
 		EndDrawing();
