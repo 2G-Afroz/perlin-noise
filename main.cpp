@@ -21,15 +21,21 @@ int main() {
 		ClearBackground(BLACK);
 
 		float a = l;
-		for(int i = 0; i < WINDOW_WIDTH; i++) {
-			float b = 0.0f;
-			for(int j = 0; j < WINDOW_HEIGHT; j++) {
-				float noise = map(perlinNoise(a, b, octaves), -1.0f, 1.0f, 0.0f, 1.0f);
-				DrawPixel(i, j, ColorFromHSV(0,0,noise));
-				b += freq;
-			}
+		// Generates 1D Perlin Noise
+		for(int i = 0; i< WINDOW_WIDTH; i++) {
+			DrawLine(i, perlinNoise(a, octaves) * 50 + 400, i+1, perlinNoise(a + freq, octaves) * 50 + 400, WHITE);
 			a += freq;
 		}
+		// Generates 2D Perlin Noise
+		// for(int i = 0; i < WINDOW_WIDTH; i++) {
+		// 	float b = 0.0f;
+		// 	for(int j = 0; j < WINDOW_HEIGHT; j++) {
+		// 		float noise = map(perlinNoise(a, b, octaves), -1.0f, 1.0f, 0.0f, 1.0f);
+		// 		DrawPixel(i, j, ColorFromHSV(0,0,noise));
+		// 		b += freq;
+		// 	}
+		// 	a += freq;
+		// }
 
 		EndDrawing();
 	}
